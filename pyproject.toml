@@ -9,3 +9,10 @@ dependencies = [
     "django>=6.0.4",
     "python-dotenv>=1.2.2",
 ]
+
+[dependency-groups]
+dev = [
+    "coverage>=7.13.5",
+    "pytest-cov>=7.1.0",
+    "pytest-django>=4.12.0",
+]
