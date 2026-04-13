@@ -1,0 +1,115 @@
+{% extends 'base/layout.html' %}
+
+{% block title %}Minhas Contas{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-display font-extrabold text-slate-100 tracking-tight">
+                Minhas Contas
+            </h1>
+            <p class="text-slate-400 mt-1">
+                Gerencie suas contas bancárias, carteiras e investimentos.
+            </p>
+        </div>
+        <a href="{% url 'accounts:create' %}" 
+           class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-all duration-200 shadow-lg shadow-emerald-900/20 group">
+            <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nova Conta
+        </a>
+    </div>
+
+    <!-- Grid de Contas -->
+    {% if accounts %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for account in accounts %}
+        <div class="bg-slate-900 rounded-2xl p-6 transition-all duration-300 hover:bg-slate-800/80 group relative overflow-hidden">
+            <!-- Efeito de brilho sutil no hover -->
+            <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-start justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-slate-800 text-emerald-400 group-hover:bg-emerald-500/10 transition-colors">
+                        {% if account.type == 'checking' %}
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"></path>
+                            <path d="M3 10h18"></path>
+                        </svg>
+                        {% elif account.type == 'savings' %}
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M19 5h-2a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2Z"></path>
+                            <path d="M5 5h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path>
+                            <path d="M9 12h6"></path>
+                        </svg>
+                        {% elif account.type == 'investment' %}
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                        </svg>
+                        {% else %}
+                        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+                            <path d="M12 12h.01"></path>
+                        </svg>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <a href="{% url 'accounts:update' account.pk %}" class="p-2 rounded-lg text-slate-500 hover:text-slate-100 hover:bg-slate-700/50 transition-all" title="Editar">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                            </svg>
+                        </a>
+                        <a href="{% url 'accounts:delete' account.pk %}" class="p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Excluir">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <h3 class="text-xl font-display font-bold text-slate-100 mb-1 truncate">{{ account.name }}</h3>
+                    <span class="inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-800 text-slate-400">
+                        {{ account.get_type_display }}
+                    </span>
+                </div>
+
+                <div>
+                    <p class="text-xs text-slate-500 font-medium uppercase tracking-widest mb-1">Saldo Atual</p>
+                    <p class="text-2xl font-display font-extrabold {% if account.current_balance >= 0 %}text-emerald-400{% else %}text-red-400{% endif %}">
+                        R$ {{ account.current_balance|floatformat:2 }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-slate-900/50 border-2 border-dashed border-slate-800 rounded-3xl p-12 text-center">
+        <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"></path>
+                <path d="M3 10h18"></path>
+            </svg>
+        </div>
+        <h2 class="text-xl font-display font-bold text-slate-200 mb-2">Nenhuma conta cadastrada</h2>
+        <p class="text-slate-500 mb-6 max-w-sm mx-auto">
+            Comece adicionando suas contas bancárias para organizar suas finanças.
+        </p>
+        <a href="{% url 'accounts:create' %}" class="inline-flex items-center gap-2 text-emerald-400 font-semibold hover:text-emerald-300 transition-colors">
+            Adicionar minha primeira conta
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
