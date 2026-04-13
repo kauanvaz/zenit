@@ -33,11 +33,13 @@ class DashboardView(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         from accounts.models import Account
+        from ai.models import FinancialAnalysis
         from transactions.models import Transaction
 
         context = super().get_context_data(**kwargs)
         user = self.request.user
         now = timezone.now()
+        current_period = now.strftime('%Y-%m')
 
         # Total balance - Account.current_balance is a Python property,
         # so aggregation must be done in Python, not at the DB level
@@ -70,9 +72,23 @@ class DashboardView(LoginRequiredMixin, TemplateView):
             '-date', '-created_at'
         )[:5]
 
+        latest_analysis = FinancialAnalysis.objects.filter(
+            user=user,
+            period=current_period,
+            status=FinancialAnalysis.Status.COMPLETED,
+        ).first()
+
+        # Is the analysis older than 24 hours?
+        stale_cutoff = now - timezone.timedelta(hours=24)
+        is_analysis_stale = bool(
+            latest_analysis and latest_analysis.created_at < stale_cutoff
+        )
+
         context['total_balance'] = total_balance
         context['monthly_income'] = monthly_income
         context['monthly_expenses'] = monthly_expenses
         context['recent_transactions'] = recent_transactions
-        context['current_period'] = now.strftime('%Y-%m')
+        context['current_period'] = current_period
+        context['latest_analysis'] = latest_analysis
+        context['is_analysis_stale'] = is_analysis_stale
         return context

@@ -1,4 +1,5 @@
 {% extends 'base/layout.html' %}
+{% load ai_tags %}
 
 {% block title %}Dashboard{% endblock %}
 
@@ -70,6 +71,105 @@
       <p class="mt-1 text-xs text-slate-500">Total de saídas no mês atual</p>
     </div>
 
+  </div>
+
+  <div class="mb-8">
+    <div class="bg-slate-800/50 border border-slate-700/50 rounded-2xl overflow-hidden">
+      <!-- Cabeçalho do Card IA -->
+      <div class="px-6 py-5 border-b border-slate-700/50 flex items-center justify-between bg-emerald-500/5">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0 border border-emerald-500/20">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+              <path d="M12 8v4l3 3"/>
+              <path d="M8 12h.01M16 12h.01M12 16h.01"/>
+            </svg>
+          </div>
+          <div>
+            <h2 class="font-display font-semibold text-base text-slate-100">Análise Financeira IA</h2>
+            <p class="text-xs text-slate-400">Insights inteligentes baseados nos seus dados</p>
+          </div>
+        </div>
+
+        {% if latest_analysis %}
+          <div class="flex items-center gap-2">
+            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider
+                         bg-emerald-500/15 text-emerald-400 border border-emerald-500/20">
+              Atualizada
+            </span>
+            <form action="{% url 'ai:analyze' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="period" value="{{ current_period }}">
+              <button type="submit" class="p-2 rounded-lg bg-slate-700/50 text-slate-300 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all duration-150">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+              </button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Conteúdo do Card IA -->
+      <div class="p-6">
+        {% if latest_analysis %}
+          <div class="prose prose-invert prose-sm max-w-none text-slate-300 leading-relaxed">
+            {{ latest_analysis.analysis_text|markdown }}
+          </div>
+
+          <div class="mt-6 pt-6 border-t border-slate-700/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div class="text-[11px] text-slate-500 flex items-center gap-1.5">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+              </svg>
+              Gerada em {{ latest_analysis.created_at|date:"d/m/Y \à\s H:i" }}
+            </div>
+
+            {% if is_analysis_stale %}
+              <div class="flex items-center gap-3">
+                <p class="text-[11px] text-amber-400/80 font-medium">Esta análise pode estar desatualizada.</p>
+                <form action="{% url 'ai:analyze' %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" name="period" value="{{ current_period }}">
+                  <button type="submit" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-all">
+                    Atualizar Agora
+                  </button>
+                </form>
+              </div>
+            {% endif %}
+          </div>
+
+        {% else %}
+          <!-- Estado vazio -->
+          <div class="flex flex-col items-center justify-center py-8 text-center">
+            <div class="w-16 h-16 rounded-3xl bg-emerald-500/5 flex items-center justify-center mb-4 border border-emerald-500/10">
+              <svg class="w-8 h-8 text-emerald-500/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+              </svg>
+            </div>
+            <h3 class="text-slate-200 font-medium mb-2">Sua inteligência financeira pessoal</h3>
+            <p class="text-sm text-slate-500 max-w-sm mb-6">
+              Nossa IA analisa seus gastos, identifica padrões e sugere economias personalizadas para você alcançar seus objetivos.
+            </p>
+            <form action="{% url 'ai:analyze' %}" method="post">
+              {% csrf_token %}
+              <input type="hidden" name="period" value="{{ current_period }}">
+              <button type="submit" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold text-white hover:opacity-90 active:scale-[0.98] transition-all duration-150"
+                      style="background: linear-gradient(135deg, #003622, #004f34);">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+                </svg>
+                Gerar Primeira Análise
+              </button>
+            </form>
+          </div>
+        {% endif %}
+      </div>
+    </div>
   </div>
 
   <!-- Últimas transações -->
