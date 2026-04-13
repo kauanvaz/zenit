@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zenit - Home</title>
+
+  <!-- TailwindCSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Manrope + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, .font-display { font-family: 'Manrope', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- Fundo com gradiente -->
+  <div class="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 flex flex-col">
+
+    <header class="px-6 py-5 flex items-center justify-between max-w-6xl mx-auto w-full">
+
+      <!-- Marca -->
+      <a href="{% url 'home' %}" class="flex items-center gap-3">
+        <span class="font-display font-bold text-lg text-slate-100 tracking-tight">Zenit</span>
+      </a>
+
+      <nav class="flex items-center gap-3" aria-label="Acesso à conta">
+        <a href="{% url 'users:login' %}"
+           class="px-4 py-2 rounded-xl text-sm font-medium text-slate-300
+                  border border-slate-700 hover:border-slate-500 hover:text-slate-100
+                  transition-colors duration-150">
+          Entrar
+        </a>
+        <a href="{% url 'users:register' %}"
+           class="px-4 py-2 rounded-xl text-sm font-semibold text-white
+                  bg-emerald-500 hover:bg-emerald-600
+                  transition-colors duration-150">
+          Cadastre-se
+        </a>
+      </nav>
+
+    </header>
+
+    <!-- ============================================================
+         HERO
+    ============================================================ -->
+    <main class="flex-1 flex flex-col items-center justify-center px-6 py-16 text-center">
+
+      <h1 class="font-display font-bold tracking-tight text-5xl sm:text-6xl lg:text-7xl mb-5">
+        <span class="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
+          Zenit
+        </span>
+      </h1>
+
+      <!-- Tagline -->
+      <p class="font-display font-semibold text-2xl sm:text-3xl text-slate-100 mb-6 max-w-xl">
+        Controle suas finanças com simplicidade
+      </p>
+
+      <!-- Descrição do produto -->
+      <p class="text-base sm:text-lg text-slate-400 max-w-lg leading-relaxed mb-12">
+        Acompanhe receitas, despesas e o saldo de todas as suas contas em um só lugar -
+        sem complicação, sem planilhas.
+      </p>
+
+      <!-- Botões de CTA -->
+      <div class="flex flex-col sm:flex-row items-center gap-4">
+        <a href="{% url 'users:register' %}"
+           class="w-full sm:w-auto px-8 py-3.5 rounded-2xl text-base font-semibold text-white
+                  bg-emerald-500 hover:bg-emerald-600
+                  transition-colors duration-150">
+          Cadastre-se gratuitamente
+        </a>
+        <a href="{% url 'users:login' %}"
+           class="w-full sm:w-auto px-8 py-3.5 rounded-2xl text-base font-semibold text-slate-300
+                  border border-slate-600 hover:border-slate-400 hover:text-slate-100
+                  transition-colors duration-150">
+          Já tenho conta - Entrar
+        </a>
+      </div>
+
+    </main>
+
+    <!-- ============================================================
+         DESTAQUES: três cards informativos
+    ============================================================ -->
+    <section class="px-6 pb-20 max-w-4xl mx-auto w-full">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+        <!-- Card 1 -->
+        <div class="bg-slate-800/50 rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M3 7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7Z"/>
+              <path d="M3 10h18"/>
+              <circle cx="7.5" cy="15" r="1"/>
+            </svg>
+          </div>
+          <h2 class="font-display font-semibold text-slate-100 text-base mb-2">Múltiplas contas</h2>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Gerencie carteiras, contas correntes, poupança e investimentos em um único painel.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-slate-800/50 rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <path d="M7 16V4m0 0L4 7m3-3 3 3M17 8v12m0 0 3-3m-3 3-3-3"/>
+            </svg>
+          </div>
+          <h2 class="font-display font-semibold text-slate-100 text-base mb-2">Receitas e despesas</h2>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Registre transações e categorize cada movimentação para entender para onde vai o seu dinheiro.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-slate-800/50 rounded-2xl p-6">
+          <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center mb-4">
+            <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"
+                 aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+          </div>
+          <h2 class="font-display font-semibold text-slate-100 text-base mb-2">Visão consolidada</h2>
+          <p class="text-sm text-slate-400 leading-relaxed">
+            Acompanhe saldo total, entradas e saídas do mês direto no dashboard, sem esforço.
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RODAPÉ
+    ============================================================ -->
+    <footer class="px-6 py-5 border-t border-slate-800/60">
+      <p class="text-xs text-slate-600 text-center">
+        &copy; {% now "Y" %} Zenit - Controle financeiro pessoal
+      </p>
+    </footer>
+
+  </div><!-- /fundo com gradiente -->
+
+</body>
+</html>
