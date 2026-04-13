@@ -1,0 +1,141 @@
+{% extends 'base/layout.html' %}
+
+{% block title %}Meu Perfil{% endblock %}
+
+{% block content %}
+
+  <div class="mb-8">
+    <h1 class="font-display font-bold text-2xl text-slate-100 tracking-tight">Meu Perfil</h1>
+    <p class="mt-1 text-sm text-slate-400">Suas informações pessoais e dados de conta</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+    <!-- Avatar e identidade -->
+    <div class="lg:col-span-1">
+      <div class="bg-slate-900 rounded-2xl p-6"
+           style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.30);">
+
+        <!-- Avatar -->
+        <div class="flex flex-col items-center text-center">
+          {% if object.avatar %}
+            <img src="{{ object.avatar.url }}"
+                 alt="Foto de perfil de {{ object.user.get_full_name|default:object.user.email }}"
+                 class="w-24 h-24 rounded-full object-cover ring-2 ring-slate-700">
+          {% else %}
+            <!-- Avatar com iniciais como fallback -->
+            <div class="w-24 h-24 rounded-full bg-emerald-500/20 ring-2 ring-slate-700 flex items-center justify-center">
+              <span class="font-display font-bold text-3xl text-emerald-400">
+                {{ object.user.first_name|first|upper }}{{ object.user.last_name|first|upper }}
+              </span>
+            </div>
+          {% endif %}
+
+          <!-- Nome completo -->
+          <h2 class="mt-4 font-display font-bold text-lg text-slate-100">
+            {{ object.user.get_full_name|default:"Sem nome" }}
+          </h2>
+
+          <!-- E-mail -->
+          <p class="mt-1 text-sm text-slate-400 break-all">{{ object.user.email }}</p>
+        </div>
+
+        <!-- Separador visual por camada de superfície -->
+        <div class="my-6 h-px bg-slate-800"></div>
+
+        <!-- Botão Editar Perfil -->
+        <a href="{% url 'profiles:edit' %}"
+           class="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl text-sm font-semibold text-white
+                  hover:opacity-90 active:scale-[0.98] transition-all duration-150"
+           style="background: linear-gradient(135deg, #003622, #004f34);">
+          <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+          Editar Perfil
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Dados detalhados -->
+    <div class="lg:col-span-2 space-y-6">
+
+      <!-- Card: Dados pessoais -->
+      <div class="bg-slate-900 rounded-2xl p-6"
+           style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.30);">
+
+        <h3 class="font-display font-semibold text-base text-slate-100 mb-5">Dados Pessoais</h3>
+
+        <dl class="space-y-4">
+
+          <!-- Nome completo -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+            <dt class="text-sm font-medium text-slate-500 sm:w-36 shrink-0">Nome completo</dt>
+            <dd class="text-sm text-slate-200">
+              {{ object.user.get_full_name|default:"-" }}
+            </dd>
+          </div>
+
+          <!-- Separador -->
+          <div class="h-px bg-slate-800"></div>
+
+          <!-- E-mail -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+            <dt class="text-sm font-medium text-slate-500 sm:w-36 shrink-0">E-mail</dt>
+            <dd class="text-sm text-slate-200 break-all">{{ object.user.email }}</dd>
+          </div>
+
+          <!-- Separador -->
+          <div class="h-px bg-slate-800"></div>
+
+          <!-- Telefone -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+            <dt class="text-sm font-medium text-slate-500 sm:w-36 shrink-0">Telefone</dt>
+            <dd class="text-sm text-slate-200">
+              {% if object.phone %}
+                {{ object.phone }}
+              {% else %}
+                <span class="text-slate-600 italic">Não informado</span>
+              {% endif %}
+            </dd>
+          </div>
+
+        </dl>
+      </div>
+
+      <!-- Card: Informações da conta -->
+      <div class="bg-slate-900 rounded-2xl p-6"
+           style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.30);">
+
+        <h3 class="font-display font-semibold text-base text-slate-100 mb-5">Informações da Conta</h3>
+
+        <dl class="space-y-4">
+
+          <!-- Membro desde -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+            <dt class="text-sm font-medium text-slate-500 sm:w-36 shrink-0">Membro desde</dt>
+            <dd class="text-sm text-slate-200">
+              {{ object.created_at|date:"d \d\e F \d\e Y" }}
+            </dd>
+          </div>
+
+          <!-- Separador -->
+          <div class="h-px bg-slate-800"></div>
+
+          <!-- Última atualização -->
+          <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4">
+            <dt class="text-sm font-medium text-slate-500 sm:w-36 shrink-0">Última atualização</dt>
+            <dd class="text-sm text-slate-200">
+              {{ object.updated_at|date:"d \d\e F \d\e Y" }}
+            </dd>
+          </div>
+
+        </dl>
+      </div>
+
+    </div>
+
+  </div>
+
+{% endblock %}

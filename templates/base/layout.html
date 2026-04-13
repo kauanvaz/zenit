@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Zenit{% endblock %} - Zenit</title>
+
+  <!-- TailwindCSS via CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+
+  <!-- Google Fonts: Manrope + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          },
+          typography: {
+            DEFAULT: {
+              css: {
+                color: '#cbd5e1', // slate-300
+                a: {
+                  color: '#34d399', // emerald-400
+                  '&:hover': {
+                    color: '#10b981', // emerald-500
+                  },
+                },
+                h1: { color: '#f1f5f9' }, // slate-100
+                h2: { color: '#f1f5f9' }, // slate-100
+                h3: { color: '#f1f5f9' }, // slate-100
+                strong: { color: '#f1f5f9' }, // slate-100
+                code: { color: '#34d399' }, // emerald-400
+              },
+            },
+          },
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    h1, h2, .font-display { font-family: 'Manrope', sans-serif; }
+  </style>
+</head>
+
+<body class="bg-slate-950 text-slate-100 min-h-screen">
+
+  <!-- hamburger toggle (checkbox hack - sem JavaScript) -->
+  <input type="checkbox" id="sidebar-toggle" class="hidden peer/sidebar">
+
+  <!-- OVERLAY: fecha sidebar ao clicar fora (mobile) -->
+  <label for="sidebar-toggle"
+         class="fixed inset-0 bg-black/60 z-20 hidden peer-checked/sidebar:block lg:hidden"
+         aria-hidden="true">
+  </label>
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar"
+         class="fixed top-0 left-0 h-full w-64 bg-slate-900 z-30
+                flex flex-col
+                -translate-x-full peer-checked/sidebar:translate-x-0
+                lg:translate-x-0
+                transition-transform duration-300 ease-in-out">
+
+    <!-- Logo / marca -->
+    <div class="px-6 py-6 border-b border-slate-800">
+      <a href="{% url 'home' %}" class="flex items-center gap-3">
+        <span class="font-display font-bold text-lg text-slate-100 tracking-tight">Zenit</span>
+      </a>
+    </div>
+
+    <!-- Navegação principal -->
+    <nav class="flex-1 px-3 py-4 overflow-y-auto">
+      {% with ns=request.resolver_match.namespace url_name=request.resolver_match.url_name %}
+      <ul class="space-y-1">
+
+        <li>
+          <a href="{% url 'profiles:detail' %}"
+             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {% if ns == 'profiles' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
+             {% if ns == 'profiles' %}aria-current="page"{% endif %}>
+            <!-- ícone: perfil -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+            Perfil
+          </a>
+        </li>
+
+      </ul>
+      {% endwith %}
+    </nav>
+
+    <!-- Rodapé do sidebar -->
+    <div class="px-3 py-4 border-t border-slate-800">
+      {% if user.is_authenticated %}
+        <!-- Informações do usuário logado -->
+        <div class="flex items-center gap-3 px-3 py-2 mb-2 rounded-xl bg-slate-800/60">
+          <!-- Avatar -->
+          <div class="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+            <span class="text-emerald-400 font-display font-bold text-xs">
+              {{ user.first_name|first|upper }}{{ user.last_name|first|upper }}
+            </span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium text-slate-100 truncate">
+              {{ user.get_full_name|default:user.email }}
+            </p>
+            <p class="text-xs text-slate-500 truncate">{{ user.email }}</p>
+          </div>
+        </div>
+
+        <!-- Logout -->
+        <form method="post" action="{% url 'users:logout' %}">
+          {% csrf_token %}
+          <button type="submit"
+                  class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                         text-slate-400 hover:text-red-400 hover:bg-red-500/10
+                         transition-colors duration-150">
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+              <polyline points="16 17 21 12 16 7"/>
+              <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            Sair
+          </button>
+        </form>
+
+      {% else %}
+        <!-- Usuário não autenticado -->
+        <a href="{% url 'users:login' %}"
+           class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium
+                  text-slate-400 hover:text-slate-100 hover:bg-slate-800
+                  transition-colors duration-150 mb-1">
+          <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Entrar
+        </a>
+        <a href="{% url 'users:register' %}"
+           class="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-sm font-semibold
+                  text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20
+                  transition-colors duration-150">
+          Criar conta
+        </a>
+      {% endif %}
+    </div>
+  </aside>
+
+  <!-- WRAPPER PRINCIPAL (empurra conteúdo para direita da sidebar) -->
+  <div class="lg:pl-64 min-h-screen flex flex-col">
+
+    <!-- Botão hamburger -->
+    <header class="lg:hidden sticky top-0 z-10 flex items-center gap-4 px-4 py-3 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800">
+      <label for="sidebar-toggle"
+             class="cursor-pointer p-1.5 rounded-lg text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition-colors"
+             aria-label="Abrir menu">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </label>
+      <span class="font-display font-bold text-slate-100">Zenit</span>
+    </header>
+
+    <!-- MENSAGENS DE FEEDBACK DJANGO -->
+    {% if messages %}
+      <div id="messages-container" class="px-4 pt-4 space-y-2 lg:px-8">
+        {% for message in messages %}
+          <div role="alert"
+               data-message
+               class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium
+                      {% if message.tags == 'success' %}bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30
+                      {% elif message.tags == 'error' %}bg-red-500/15 text-red-300 ring-1 ring-red-500/30
+                      {% elif message.tags == 'warning' %}bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30
+                      {% else %}bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30{% endif %}">
+
+            <!-- Ícone da mensagem -->
+            {% if message.tags == 'success' %}
+              <svg class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M20 6 9 17l-5-5"/>
+              </svg>
+            {% elif message.tags == 'error' %}
+              <svg class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="8" x2="12" y2="12"/>
+                <line x1="12" y1="16" x2="12.01" y2="16"/>
+              </svg>
+            {% elif message.tags == 'warning' %}
+              <svg class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+              </svg>
+            {% else %}
+              <svg class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+            {% endif %}
+
+            <span class="flex-1">{{ message }}</span>
+
+            <!-- Botão fechar -->
+            <button type="button"
+                    onclick="this.closest('[data-message]').remove()"
+                    class="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+                    aria-label="Fechar mensagem">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18"/>
+                <line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Auto-dismiss em 4 segundos -->
+      <script>
+        (function () {
+          var delay = 4000;
+          var messages = document.querySelectorAll('[data-message]');
+          messages.forEach(function (el) {
+            setTimeout(function () {
+              el.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+              el.style.opacity = '0';
+              el.style.transform = 'translateY(-4px)';
+              setTimeout(function () { el.remove(); }, 400);
+            }, delay);
+          });
+        })();
+      </script>
+    {% endif %}
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 px-4 py-6 lg:px-8 lg:py-8">
+      {% block content %}{% endblock %}
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="px-4 py-4 lg:px-8 border-t border-slate-800/60">
+      <p class="text-xs text-slate-600 text-center">
+        &copy; {% now "Y" %} Zenit - Controle financeiro pessoal
+      </p>
+    </footer>
+
+  </div>
+
+  {% block extra_js %}{% endblock %}
+
+</body>
+</html>

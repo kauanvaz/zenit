@@ -1,0 +1,179 @@
+{% extends 'base/layout.html' %}
+
+{% block title %}Editar Perfil{% endblock %}
+
+{% block content %}
+
+  <div class="mb-8">
+    <div class="flex items-center gap-3 mb-1">
+
+      <a href="{% url 'profiles:detail' %}"
+         class="flex items-center justify-center w-8 h-8 rounded-lg text-slate-400
+                hover:text-slate-100 hover:bg-slate-800 transition-colors duration-150"
+         aria-label="Voltar ao perfil">
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M19 12H5M12 5l-7 7 7 7"/>
+        </svg>
+      </a>
+      <h1 class="font-display font-bold text-2xl text-slate-100 tracking-tight">Editar Perfil</h1>
+    </div>
+    <p class="mt-1 text-sm text-slate-400 pl-11">Atualize seu telefone e foto de perfil</p>
+  </div>
+
+  <!-- Card do formulário -->
+  <div class="max-w-2xl">
+    <div class="bg-slate-900 rounded-2xl p-6 sm:p-8"
+         style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.30);">
+
+      <!-- Erros gerais do formulário -->
+      {% if form.non_field_errors %}
+        <div role="alert"
+             class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-6
+                    bg-red-500/15 text-red-300 ring-1 ring-red-500/30">
+          <svg class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span class="flex-1">
+            {% for error in form.non_field_errors %}{{ error }}{% if not forloop.last %} {% endif %}{% endfor %}
+          </span>
+        </div>
+      {% endif %}
+
+      <form method="post"
+            action="{% url 'profiles:edit' %}"
+            enctype="multipart/form-data"
+            novalidate>
+        {% csrf_token %}
+
+        <!-- Avatar atual + upload -->
+        <div class="mb-7">
+          <p class="block text-sm font-medium text-slate-300 mb-3">Foto de Perfil</p>
+
+          <!-- Preview do avatar atual -->
+          {% if object.avatar %}
+            <div class="flex items-center gap-4 mb-4">
+              <img src="{{ object.avatar.url }}"
+                   alt="Foto de perfil atual"
+                   class="w-16 h-16 rounded-full object-cover ring-2 ring-slate-700">
+              <div>
+                <p class="text-xs text-slate-400">Foto atual</p>
+                <p class="text-xs text-slate-500 mt-0.5">Selecione um novo arquivo abaixo para substituir</p>
+              </div>
+            </div>
+          {% else %}
+            <div class="flex items-center gap-4 mb-4">
+              <div class="w-16 h-16 rounded-full bg-emerald-500/20 ring-2 ring-slate-700 flex items-center justify-center shrink-0">
+                <span class="font-display font-bold text-xl text-emerald-400">
+                  {{ request.user.first_name|first|upper }}{{ request.user.last_name|first|upper }}
+                </span>
+              </div>
+              <p class="text-xs text-slate-500">Nenhuma foto cadastrada. Faça o upload abaixo.</p>
+            </div>
+          {% endif %}
+
+          <!-- Input file -->
+          <label for="{{ form.avatar.id_for_label }}"
+                 class="flex flex-col items-center justify-center w-full h-28 rounded-xl
+                        bg-slate-800 hover:bg-slate-700/80
+                        ring-1 ring-slate-700 hover:ring-emerald-500/40
+                        cursor-pointer transition-all duration-150
+                        {% if form.avatar.errors %}ring-red-500/60{% endif %}">
+            <svg class="w-6 h-6 text-slate-500 mb-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span class="text-sm text-slate-400">
+              Clique para selecionar uma imagem
+            </span>
+            <span class="text-xs text-slate-600 mt-1">JPG, PNG ou GIF - máx. 5 MB</span>
+            <input type="file"
+                   id="{{ form.avatar.id_for_label }}"
+                   name="{{ form.avatar.html_name }}"
+                   accept="image/*"
+                   class="sr-only">
+          </label>
+
+          {% if form.avatar.errors %}
+            <p class="mt-1.5 text-xs text-red-400" role="alert">
+              {% for error in form.avatar.errors %}{{ error }}{% if not forloop.last %} {% endif %}{% endfor %}
+            </p>
+          {% endif %}
+
+          <!-- Checkbox para remover avatar existente (padrão Django ImageField) -->
+          {% if form.avatar.value %}
+            <label class="flex items-center gap-2 mt-3 cursor-pointer group">
+              <input type="checkbox"
+                     name="avatar-clear"
+                     id="avatar-clear_id"
+                     class="w-4 h-4 rounded bg-slate-800 border-slate-600
+                            text-emerald-500 focus:ring-emerald-500/40 focus:ring-2
+                            accent-emerald-500">
+              <span class="text-xs text-slate-500 group-hover:text-slate-400 transition-colors">
+                Remover foto atual
+              </span>
+            </label>
+          {% endif %}
+        </div>
+
+        <!-- Telefone -->
+        <div class="mb-8">
+          <label for="{{ form.phone.id_for_label }}"
+                 class="block text-sm font-medium text-slate-300 mb-2">
+            Telefone
+          </label>
+          <input type="tel"
+                 id="{{ form.phone.id_for_label }}"
+                 name="{{ form.phone.html_name }}"
+                 value="{{ form.phone.value|default:'' }}"
+                 autocomplete="tel"
+                 placeholder="(11) 99999-9999"
+                 class="w-full bg-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100
+                        placeholder-slate-500
+                        focus:outline-none focus:ring-2 focus:ring-emerald-500/50
+                        transition-all duration-150
+                        {% if form.phone.errors %}ring-1 ring-red-500/60{% endif %}">
+          {% if form.phone.errors %}
+            <p class="mt-1.5 text-xs text-red-400" role="alert">
+              {% for error in form.phone.errors %}{{ error }}{% if not forloop.last %} {% endif %}{% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <!-- Ações do formulário -->
+        <div class="flex flex-col-reverse sm:flex-row items-center gap-3">
+
+          <!-- Cancelar -->
+          <a href="{% url 'profiles:detail' %}"
+             class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl
+                    text-sm font-semibold text-slate-300 bg-slate-800
+                    hover:bg-slate-700 hover:text-slate-100
+                    transition-colors duration-150">
+            Cancelar
+          </a>
+
+          <!-- Salvar -->
+          <button type="submit"
+                  class="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl
+                         text-sm font-semibold text-white
+                         hover:opacity-90 active:scale-[0.98]
+                         transition-all duration-150"
+                  style="background: linear-gradient(135deg, #003622, #004f34);">
+            <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+              <polyline points="17 21 17 13 7 13 7 21"/>
+              <polyline points="7 3 7 8 15 8"/>
+            </svg>
+            Salvar Alterações
+          </button>
+
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+{% endblock %}
