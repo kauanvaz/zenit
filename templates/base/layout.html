@@ -110,6 +110,19 @@
           </a>
         </li>
 
+        <li>
+          <a href="{% url 'categories:list' %}"
+             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {% if ns == 'categories' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
+             {% if ns == 'categories' %}aria-current="page"{% endif %}>
+            <!-- ícone: categorias -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M6 6h4v4H6zM14 6h4v4h-4zM6 14h4v4H6zM14 14h4v4h-4z"/>
+            </svg>
+            Categorias
+          </a>
+        </li>
+
       </ul>
       {% endwith %}
     </nav>

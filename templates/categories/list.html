@@ -1,0 +1,102 @@
+{% extends 'base/layout.html' %}
+
+{% block title %}Minhas Categorias{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+            <h1 class="text-3xl font-display font-extrabold text-slate-100 tracking-tight">
+                Categorias
+            </h1>
+            <p class="text-slate-400 mt-1">
+                Organize suas receitas e despesas por categorias.
+            </p>
+        </div>
+        <a href="{% url 'categories:create' %}" 
+           class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition-all duration-200 shadow-lg shadow-emerald-900/20 group">
+            <svg class="w-5 h-5 group-hover:rotate-90 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Nova Categoria
+        </a>
+    </div>
+
+    <!-- Grid de Categorias -->
+    {% if categories %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for category in categories %}
+        <div class="bg-slate-900 rounded-2xl p-5 transition-all duration-300 hover:bg-slate-800/80 group relative overflow-hidden border border-slate-800/50">
+            <div class="flex items-center justify-between gap-4 relative z-10">
+                <div class="flex items-center gap-4 min-w-0 flex-1">
+                    <!-- Badge de Cor -->
+                    <div class="w-10 h-10 rounded-xl flex-shrink-0 shadow-lg flex items-center justify-center text-white" style="background-color: {{ category.color }};">
+                        <span class="font-display font-bold uppercase text-[10px] opacity-70">
+                            {{ category.name|first }}
+                        </span>
+                    </div>
+                    
+                    <div class="truncate min-w-0">
+                        <h3 class="text-slate-100 font-bold truncate group-hover:text-white transition-colors">
+                            {{ category.name }}
+                        </h3>
+                        <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider {% if category.type == 'income' %}text-emerald-400{% else %}text-red-400{% endif %}">
+                            <span class="w-1 h-1 rounded-full bg-current"></span>
+                            {{ category.get_type_display }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Ações -->
+                {% if category.user %}
+                <div class="flex items-center gap-1">
+                    <a href="{% url 'categories:update' category.pk %}" class="p-2 rounded-lg text-slate-500 hover:text-slate-100 hover:bg-slate-700/50 transition-all" title="Editar">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+                        </svg>
+                    </a>
+                    <a href="{% url 'categories:delete' category.pk %}" class="p-2 rounded-lg text-slate-500 hover:text-red-400 hover:bg-red-500/10 transition-all" title="Excluir">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                    </a>
+                </div>
+                {% else %}
+                <span class="p-2 text-slate-600" title="Categoria Global (Não editável)">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                    </svg>
+                </span>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="bg-slate-900/50 border-2 border-dashed border-slate-800 rounded-3xl p-12 text-center">
+        <div class="w-16 h-16 bg-slate-800 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+        </div>
+        <h2 class="text-xl font-display font-bold text-slate-200 mb-2">Nenhuma categoria cadastrada</h2>
+        <p class="text-slate-500 mb-6 max-w-sm mx-auto">
+            Organize suas transações criando categorias personalizadas.
+        </p>
+        <a href="{% url 'categories:create' %}" class="inline-flex items-center gap-2 text-emerald-400 font-semibold hover:text-emerald-300 transition-colors">
+            Adicionar minha primeira categoria
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

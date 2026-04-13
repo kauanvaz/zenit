@@ -32,7 +32,7 @@ urlpatterns = [
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
 
     path('accounts/', include('accounts.urls')),
-    # path('categories/', include('categories.urls')),
+    path('categories/', include('categories.urls')),
     # path('transactions/', include('transactions.urls')),
     path('profile/', include('profiles.urls')),
     # path('reports/', include('reports.urls')),
