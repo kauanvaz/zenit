@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar conta - Zenit</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Manrope + Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Manrope', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .font-display { font-family: 'Manrope', sans-serif; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-slate-950 to-slate-900 flex items-center justify-center px-4 py-12">
+
+  <!-- Card central -->
+  <div class="w-full max-w-md">
+
+    <!-- Logotipo e identidade -->
+    <div class="text-center mb-10">
+      <h1 class="font-display font-bold text-3xl tracking-tight"
+          style="background: linear-gradient(135deg, #6ffbbe, #34d399); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+        Zenit
+      </h1>
+      <p class="mt-2 text-sm text-slate-400">
+        Seu controle financeiro pessoal
+      </p>
+    </div>
+
+    <!-- Card do formulário -->
+    <div class="bg-slate-900 rounded-2xl p-8"
+         style="box-shadow: 0 20px 40px rgba(0, 0, 0, 0.40);">
+
+      <h2 class="font-display font-bold text-xl text-slate-100 mb-1">
+        Criar conta
+      </h2>
+      <p class="text-sm text-slate-400 mb-8">
+        Preencha os dados abaixo para começar
+      </p>
+
+      {% if messages %}
+        <div class="space-y-2 mb-6">
+          {% for message in messages %}
+            <div role="alert"
+                 class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium
+                        {% if message.tags == 'success' %}bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30
+                        {% elif message.tags == 'error' %}bg-red-500/15 text-red-300 ring-1 ring-red-500/30
+                        {% elif message.tags == 'warning' %}bg-amber-500/15 text-amber-300 ring-1 ring-amber-500/30
+                        {% else %}bg-sky-500/15 text-sky-300 ring-1 ring-sky-500/30{% endif %}">
+              <span class="flex-1">{{ message }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <!-- Erro geral de formulário -->
+      {% if form.non_field_errors %}
+        <div role="alert"
+             class="flex items-start gap-3 px-4 py-3 rounded-xl text-sm font-medium mb-6
+                    bg-red-500/15 text-red-300 ring-1 ring-red-500/30">
+          <svg class="w-4 h-4 mt-0.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" y1="8" x2="12" y2="12"/>
+            <line x1="12" y1="16" x2="12.01" y2="16"/>
+          </svg>
+          <span class="flex-1">
+            {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+          </span>
+        </div>
+      {% endif %}
+
+      <form method="post" action="{% url 'users:register' %}" novalidate>
+        {% csrf_token %}
+
+        <!-- Primeiro nome e Sobrenome: linha dupla -->
+        <div class="grid grid-cols-2 gap-4 mb-5">
+
+          <!-- Campo: Primeiro nome -->
+          <div>
+            <label for="{{ form.first_name.id_for_label }}"
+                   class="block text-sm font-medium text-slate-300 mb-2">
+              Primeiro nome
+            </label>
+            <input type="text"
+                   id="{{ form.first_name.id_for_label }}"
+                   name="{{ form.first_name.html_name }}"
+                   value="{{ form.first_name.value|default:'' }}"
+                   autocomplete="given-name"
+                   placeholder="João"
+                   required
+                   class="w-full bg-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100
+                          placeholder-slate-500
+                          focus:outline-none focus:ring-2 focus:ring-emerald-500/50
+                          transition-all duration-150
+                          {% if form.first_name.errors %}ring-1 ring-red-500/60{% endif %}">
+            {% if form.first_name.errors %}
+              <p class="mt-1.5 text-xs text-red-400">
+                {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+              </p>
+            {% endif %}
+          </div>
+
+          <!-- Campo: Sobrenome -->
+          <div>
+            <label for="{{ form.last_name.id_for_label }}"
+                   class="block text-sm font-medium text-slate-300 mb-2">
+              Sobrenome
+            </label>
+            <input type="text"
+                   id="{{ form.last_name.id_for_label }}"
+                   name="{{ form.last_name.html_name }}"
+                   value="{{ form.last_name.value|default:'' }}"
+                   autocomplete="family-name"
+                   placeholder="Silva"
+                   required
+                   class="w-full bg-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100
+                          placeholder-slate-500
+                          focus:outline-none focus:ring-2 focus:ring-emerald-500/50
+                          transition-all duration-150
+                          {% if form.last_name.errors %}ring-1 ring-red-500/60{% endif %}">
+            {% if form.last_name.errors %}
+              <p class="mt-1.5 text-xs text-red-400">
+                {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+              </p>
+            {% endif %}
+          </div>
+
+        </div>
+
+        <!-- Campo: E-mail -->
+        <div class="mb-5">
+          <label for="{{ form.email.id_for_label }}"
+                 class="block text-sm font-medium text-slate-300 mb-2">
+            E-mail
+          </label>
+          <input type="email"
+                 id="{{ form.email.id_for_label }}"
+                 name="{{ form.email.html_name }}"
+                 value="{{ form.email.value|default:'' }}"
+                 autocomplete="email"
+                 placeholder="seu@email.com"
+                 required
+                 class="w-full bg-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100
+                        placeholder-slate-500
+                        focus:outline-none focus:ring-2 focus:ring-emerald-500/50
+                        transition-all duration-150
+                        {% if form.email.errors %}ring-1 ring-red-500/60{% endif %}">
+          {% if form.email.errors %}
+            <p class="mt-1.5 text-xs text-red-400">
+              {% for error in form.email.errors %}{{ error }}{% endfor %}
+            </p>
+          {% endif %}
+        </div>
+
+        <!-- Campo: Senha -->
+        <div class="mb-5">
+          <label for="{{ form.password1.id_for_label }}"
+                 class="block text-sm font-medium text-slate-300 mb-2">
+            Senha
+          </label>
+          <input type="password"
+                 id="{{ form.password1.id_for_label }}"
+                 name="{{ form.password1.html_name }}"
+                 autocomplete="new-password"
+                 placeholder="••••••••"
+                 required
+                 class="w-full bg-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100
+                        placeholder-slate-500
+                        focus:outline-none focus:ring-2 focus:ring-emerald-500/50
+                        transition-all duration-150
+                        {% if form.password1.errors %}ring-1 ring-red-500/60{% endif %}">
+          {% if form.password1.errors %}
+            <div class="mt-1.5 space-y-0.5">
+              {% for error in form.password1.errors %}
+                <p class="text-xs text-red-400">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Campo: Confirmar senha -->
+        <div class="mb-8">
+          <label for="{{ form.password2.id_for_label }}"
+                 class="block text-sm font-medium text-slate-300 mb-2">
+            Confirmar senha
+          </label>
+          <input type="password"
+                 id="{{ form.password2.id_for_label }}"
+                 name="{{ form.password2.html_name }}"
+                 autocomplete="new-password"
+                 placeholder="••••••••"
+                 required
+                 class="w-full bg-slate-800 rounded-xl px-4 py-3 text-sm text-slate-100
+                        placeholder-slate-500
+                        focus:outline-none focus:ring-2 focus:ring-emerald-500/50
+                        transition-all duration-150
+                        {% if form.password2.errors %}ring-1 ring-red-500/60{% endif %}">
+          {% if form.password2.errors %}
+            <div class="mt-1.5 space-y-0.5">
+              {% for error in form.password2.errors %}
+                <p class="text-xs text-red-400">{{ error }}</p>
+              {% endfor %}
+            </div>
+          {% endif %}
+        </div>
+
+        <!-- Botão de envio -->
+        <button type="submit"
+                class="w-full py-3 rounded-xl text-sm font-semibold text-white
+                       hover:opacity-90 active:scale-[0.98]
+                       transition-all duration-150"
+                style="background: linear-gradient(135deg, #003622, #004f34);">
+          Criar conta
+        </button>
+      </form>
+    </div>
+
+    <!-- Link para login -->
+    <p class="mt-6 text-center text-sm text-slate-500">
+      Já tem conta?
+      <a href="{% url 'users:login' %}"
+         class="text-emerald-400 font-medium hover:text-emerald-300 transition-colors duration-150">
+        Entrar
+      </a>
+    </p>
+
+  </div>
+
+</body>
+</html>
