@@ -82,6 +82,22 @@
       <ul class="space-y-1">
 
         <li>
+          <a href="{% url 'dashboard' %}"
+             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {% if url_name == 'dashboard' and not ns %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
+             {% if url_name == 'dashboard' and not ns %}aria-current="page"{% endif %}>
+            <!-- ícone: dashboard -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+
+        <li>
           <a href="{% url 'transactions:list' %}"
              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
                     {% if ns == 'transactions' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
