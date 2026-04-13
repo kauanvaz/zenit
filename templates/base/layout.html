@@ -82,6 +82,19 @@
       <ul class="space-y-1">
 
         <li>
+          <a href="{% url 'transactions:list' %}"
+             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {% if ns == 'transactions' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
+             {% if ns == 'transactions' %}aria-current="page"{% endif %}>
+            <!-- ícone: transações -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M7 16V4m0 0L4 7m3-3 3 3M17 8v12m0 0 3-3m-3 3-3-3"/>
+            </svg>
+            Transações
+          </a>
+        </li>
+
+        <li>
           <a href="{% url 'accounts:list' %}"
              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
                     {% if ns == 'accounts' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
@@ -97,6 +110,19 @@
         </li>
 
         <li>
+          <a href="{% url 'categories:list' %}"
+             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {% if ns == 'categories' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
+             {% if ns == 'categories' %}aria-current="page"{% endif %}>
+            <!-- ícone: categorias -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M6 6h4v4H6zM14 6h4v4h-4zM6 14h4v4H6zM14 14h4v4h-4z"/>
+            </svg>
+            Categorias
+          </a>
+        </li>
+
+        <li>
           <a href="{% url 'profiles:detail' %}"
              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
                     {% if ns == 'profiles' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
@@ -107,19 +133,6 @@
               <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
             </svg>
             Perfil
-          </a>
-        </li>
-
-        <li>
-          <a href="{% url 'categories:list' %}"
-             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
-                    {% if ns == 'categories' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
-             {% if ns == 'categories' %}aria-current="page"{% endif %}>
-            <!-- ícone: categorias -->
-            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-              <path d="M6 6h4v4H6zM14 6h4v4h-4zM6 14h4v4H6zM14 14h4v4h-4z"/>
-            </svg>
-            Categorias
           </a>
         </li>
 
@@ -185,7 +198,7 @@
     </div>
   </aside>
 
-  <!-- WRAPPER PRINCIPAL (empurra conteúdo para direita da sidebar) -->
+  <!-- Wrapper principal (empurra conteúdo para direita da sidebar) -->
   <div class="lg:pl-64 min-h-screen flex flex-col">
 
     <!-- Botão hamburger -->

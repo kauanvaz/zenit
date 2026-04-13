@@ -33,7 +33,7 @@ urlpatterns = [
 
     path('accounts/', include('accounts.urls')),
     path('categories/', include('categories.urls')),
-    # path('transactions/', include('transactions.urls')),
+    path('transactions/', include('transactions.urls')),
     path('profile/', include('profiles.urls')),
     # path('reports/', include('reports.urls')),
 ]
