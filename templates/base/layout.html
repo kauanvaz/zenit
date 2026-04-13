@@ -139,6 +139,23 @@
         </li>
 
         <li>
+          <a href="{% url 'reports:index' %}"
+             class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
+                    {% if ns == 'reports' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"
+             {% if ns == 'reports' %}aria-current="page"{% endif %}>
+            <!-- ícone: relatórios (bar chart) -->
+            <svg class="w-5 h-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+              <path d="M3 3v18h18"/>
+              <path d="M7 16V10"/>
+              <path d="M11 16V6"/>
+              <path d="M15 16v-4"/>
+              <path d="M19 16v-7"/>
+            </svg>
+            Relatórios
+          </a>
+        </li>
+
+        <li>
           <a href="{% url 'profiles:detail' %}"
              class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-colors duration-150
                     {% if ns == 'profiles' %}text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/15{% else %}text-slate-400 hover:text-slate-100 hover:bg-slate-800{% endif %}"

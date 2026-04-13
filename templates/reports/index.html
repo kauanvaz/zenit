@@ -1,0 +1,172 @@
+{% extends 'base/layout.html' %}
+
+{% block title %}Relatórios{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto space-y-8">
+
+  <div>
+    <h1 class="font-display font-bold text-2xl text-slate-100">Relatórios</h1>
+    <p class="text-sm text-slate-400 mt-1">Visão geral das suas finanças dos últimos 12 meses</p>
+  </div>
+
+  <!-- Monthly bar chart -->
+  <div class="bg-slate-900 rounded-2xl p-6 ring-1 ring-slate-800">
+    <h2 class="font-display font-semibold text-lg text-slate-100 mb-6">Receitas vs Despesas - últimos 12 meses</h2>
+    <div class="relative" style="height: 320px;">
+      <canvas id="monthlyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Category pie chart -->
+  <div class="bg-slate-900 rounded-2xl p-6 ring-1 ring-slate-800">
+    <h2 class="font-display font-semibold text-lg text-slate-100 mb-6">Despesas por Categoria - ano atual</h2>
+    <div class="flex flex-col items-center lg:flex-row lg:items-start gap-8">
+      <div class="relative shrink-0" style="width: 280px; height: 280px;">
+        <canvas id="categoryChart"></canvas>
+      </div>
+      <!-- Legend -->
+      <div id="categoryLegend" class="flex flex-wrap gap-x-6 gap-y-3 content-start pt-1"></div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js via CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  const monthlyLabels   = {{ monthly_labels|safe }};
+  const monthlyIncome   = {{ monthly_income|safe }};
+  const monthlyExpenses = {{ monthly_expenses|safe }};
+  const categoryLabels  = {{ category_labels|safe }};
+  const categoryData    = {{ category_data|safe }};
+  const categoryColors  = {{ category_colors|safe }};
+
+  // Shared Chart.js defaults
+  Chart.defaults.color = '#94a3b8';           // slate-400
+  Chart.defaults.font.family = 'Inter, sans-serif';
+  Chart.defaults.font.size = 12;
+
+  // Monthly bar chart
+  const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+  new Chart(monthlyCtx, {
+    type: 'bar',
+    data: {
+      labels: monthlyLabels,
+      datasets: [
+        {
+          label: 'Receitas',
+          data: monthlyIncome,
+          backgroundColor: 'rgba(52, 211, 153, 0.75)',   // emerald-400
+          borderColor: 'rgba(52, 211, 153, 1)',
+          borderWidth: 1.5,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+        {
+          label: 'Despesas',
+          data: monthlyExpenses,
+          backgroundColor: 'rgba(248, 113, 113, 0.75)',  // red-400
+          borderColor: 'rgba(248, 113, 113, 1)',
+          borderWidth: 1.5,
+          borderRadius: 4,
+          borderSkipped: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: {
+          labels: { boxWidth: 12, boxHeight: 12, borderRadius: 3, useBorderRadius: true },
+        },
+        tooltip: {
+          callbacks: {
+            label: function (ctx) {
+              const val = ctx.parsed.y.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+              return ` ${ctx.dataset.label}: ${val}`;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: { color: 'rgba(51, 65, 85, 0.5)' },    // slate-700/50
+          ticks: { maxRotation: 45 },
+        },
+        y: {
+          grid: { color: 'rgba(51, 65, 85, 0.5)' },
+          ticks: {
+            callback: function (val) {
+              return 'R$ ' + val.toLocaleString('pt-BR');
+            },
+          },
+        },
+      },
+    },
+  });
+
+  // Category doughnut chart
+  const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+
+  if (categoryData.length === 0) {
+    // No data - show a placeholder
+    categoryCtx.canvas.parentElement.innerHTML =
+      '<p class="text-slate-500 text-sm text-center pt-20 w-full">Nenhuma despesa registrada este ano.</p>';
+  } else {
+    new Chart(categoryCtx, {
+      type: 'doughnut',
+      data: {
+        labels: categoryLabels,
+        datasets: [{
+          data: categoryData,
+          backgroundColor: categoryColors,
+          borderColor: '#0f172a',   // slate-950 (matches page bg)
+          borderWidth: 2,
+          hoverOffset: 8,
+        }],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '62%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: function (ctx) {
+                const val = ctx.parsed.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+                return ` ${ctx.label}: ${val}`;
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Build custom legend
+    const legend = document.getElementById('categoryLegend');
+    categoryLabels.forEach(function (label, i) {
+      const item = document.createElement('div');
+      item.className = 'flex items-center gap-2 text-sm text-slate-300';
+      const dot = document.createElement('span');
+      dot.className = 'w-3 h-3 rounded-full shrink-0';
+      dot.style.backgroundColor = categoryColors[i];
+      const text = document.createElement('span');
+      const formatted = categoryData[i].toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      text.textContent = `${label} (${formatted})`;
+      item.appendChild(dot);
+      item.appendChild(text);
+      legend.appendChild(item);
+    });
+  }
+})();
+</script>
+{% endblock %}

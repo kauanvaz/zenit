@@ -35,6 +35,6 @@ urlpatterns = [
     path('categories/', include('categories.urls')),
     path('transactions/', include('transactions.urls')),
     path('profile/', include('profiles.urls')),
-    # path('reports/', include('reports.urls')),
+    path('reports/', include('reports.urls')),
 ]
 
