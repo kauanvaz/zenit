@@ -1,106 +1,130 @@
 # Zenit
 
-Aplicação web de controle financeiro pessoal construída com Django.  
-O projeto centraliza cadastro de contas, categorias e transações, apresenta indicadores no dashboard, gera relatórios e oferece análise financeira assistida por IA.
+Personal finance management web application built with Django.  
+The project centralizes account, category, and transaction management, displays dashboard indicators, generates reports, and provides AI-assisted financial analysis.
 
-## Funcionalidades
+## Features
 
-- Autenticação por e-mail (login, logout, registro).
-- Dashboard com saldo total, receitas/despesas do mês e transações recentes.
-- CRUD de contas, categorias e transações.
-- Filtros de transações por mês, ano, tipo e categoria.
-- Exportação de transações em CSV e PDF.
-- Relatórios com gráficos (últimos 12 meses e despesas por categoria).
-- Perfil do usuário (telefone e avatar).
-- Análise financeira por IA para um período (`YYYY-MM`) com snapshot de receitas, despesas e saldo.
+- Email authentication (login, logout, registration).
+- Dashboard with total balance, monthly income/expenses, and recent transactions.
+- CRUD for accounts, categories, and transactions.
+- Transaction filters by month, year, type, and category.
+- Transaction export to CSV and PDF.
+- Reports with charts (last 12 months and expenses by category).
+- User profile (phone and avatar).
+- AI financial analysis for a period (`YYYY-MM`) with an income, expense, and balance snapshot.
 
-## Tecnologias utilizadas
+## Technologies Used
 
 - Python 3.14
 - Django 6
-- SQLite (padrão) com suporte a `DATABASE_URL` via `dj-database-url`
-- LangChain + `langchain-openai` (módulo de IA)
+- SQLite (default) with `DATABASE_URL` support via `dj-database-url`
+- LangChain + `langchain-openai` (AI module)
 - Pytest + pytest-django + pytest-cov
-- `uv` para gestão de dependências
+- `uv` for dependency management
 
-## Estrutura do projeto
+## Project Structure
 
 ```text
-core/           # Configuração global (settings, urls, views base)
-users/          # Usuário customizado e autenticação
-accounts/       # Contas bancárias/carteira
-categories/     # Categorias de receita e despesa
-transactions/   # Transações, filtros e exportações
-reports/        # Relatórios e gráficos
-profiles/       # Perfil do usuário
-ai/             # Análise financeira com agente LangChain/OpenAI
-templates/      # Templates HTML por módulo
+core/           # Global configuration (settings, urls, base views)
+users/          # Custom user and authentication
+accounts/       # Bank accounts/wallet
+categories/     # Income and expense categories
+transactions/   # Transactions, filters, and exports
+reports/        # Reports and charts
+profiles/       # User profile
+ai/             # Financial analysis with a LangChain/OpenAI agent
+templates/      # HTML templates by module
 ```
 
-## Como executar localmente
+## Running Locally
 
-1. Instale dependências:
+1. Install dependencies:
 
 ```bash
 uv sync --dev
 ```
 
-2. Configure ambiente:
+2. Configure the environment:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Aplique migrações:
+3. Apply migrations:
 
 ```bash
 uv run python manage.py migrate
 ```
 
-4. (Opcional) Popule categorias iniciais:
+4. (Optional) Seed initial categories:
 
 ```bash
 uv run python manage.py seed_categories
 ```
 
-5. Suba o servidor:
+5. Start the server:
 
 ```bash
 uv run python manage.py runserver
 ```
 
-Acesse:
+Access:
 - `http://127.0.0.1:8000/`
 - Admin: `http://127.0.0.1:8000/admin/`
 
-## Variáveis de ambiente
+## Environment Variables
 
-Use o `.env.example` como base:
+Available template:
+
+- `.env.example`: single base for development and production.
+
+For local development:
+
+```bash
+cp .env.example .env
+```
+
+To prepare production:
+
+```bash
+cp .env.example .env.prod
+```
+
+In the production file (`.env.prod`), configure at least:
+- `DJANGO_ENV=production`
+- `DEBUG=False`
+- `ALLOWED_HOSTS` with the real domain(s)
+- `DATABASE_URL` with PostgreSQL
+
+Relevant variables:
 
 - `SECRET_KEY`
+- `DJANGO_ENV`
 - `DEBUG`
 - `ALLOWED_HOSTS`
-- `OPENAI_API_KEY` (necessário para análise por IA)
-- `OPENAI_MODEL` (padrão: `gpt-5-mini`)
+- `DATABASE_URL` (in production, use a PostgreSQL URL)
+- `OPENAI_API_KEY` (required for AI analysis)
+- `OPENAI_MODEL` (default: `gpt-5-mini`)
 
-## Testes
+## Tests
 
-Execute todos os testes:
+Run all tests:
 
 ```bash
 uv run pytest
 ```
 
-Observações:
-- A suíte exige cobertura mínima de **80%** (`--cov-fail-under=80`).
-- Exemplo de execução pontual:
+Notes:
+- The suite requires minimum **80%** coverage (`--cov-fail-under=80`).
+- Example focused run:
 
 ```bash
 uv run pytest ai/tests/test_agent.py
 ```
 
-## Notas sobre IA
+## AI Notes
 
-- O endpoint `POST /ai/analyze/` exige usuário autenticado.
-- A análise requer pelo menos 3 transações no período solicitado.
-- Se já existir análise concluída nas últimas 24h para o mesmo período, o sistema reutiliza o resultado.
+- The `POST /ai/analyze/` endpoint requires an authenticated user.
+- Analysis requires at least 3 transactions in the requested period.
+- If a completed analysis already exists from the last 24 hours for the same period, the system reuses the result.
